@@ -1,0 +1,23 @@
+{
+  "id": "1503569",
+  "name": "marlboro",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "7206014",
+      "name": "Back ",
+      "font_class": "Back",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
+      "icon_id": "9122148",
+      "name": "快进",
+      "font_class": "kuaijin",
+      "unicode": "e651",
+      "unicode_decimal": 58961
+    }
+  ]
+}
