@@ -36,7 +36,7 @@
     <el-button type="primary" @click="onOpenDialog">打开弹窗</el-button>
     <div style="margin-top:20px">
       <CDatePicker
-        :diabledToday='false'
+        :diabledToday='true'
       />
     </div>
     

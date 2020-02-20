@@ -12,7 +12,7 @@
                     <th :key="index" v-for="(item,index) in calendarTitleArr">{{ item}}</th>
                 </tr>
                 <tr class="date-table-row" :key="index" v-for="(item,index) in calendarArr">
-                    <td :class="[isCurrentMonth(obj),{ 'current-date':isCurrentDay(obj) }]" :key="tdIndex" v-for="(obj,tdIndex) in item"><div><span>{{ obj.day}}</span></div></td>
+                    <td :class="[isCurrentMonth(obj),{ 'current-date':isCurrentDay(obj) },{'in-range':isInRange(obj)},{ 'start-date': range.indexOf(obj.dateStr)>-1}]" @click="onCalendarChange(obj)" :key="tdIndex" v-for="(obj,tdIndex) in item"><div><span>{{ obj.day}}</span></div></td>
                 </tr>
             </tbody>
         </table>
@@ -25,15 +25,22 @@ export default {
     data(){
         let {year, month, day} = tool.getNewDate(this.currentDate);
         return{
-            visible:true,
             calendarTitleArr: ['日','一','二','三','四','五','六'],
             time: {year, month, day},
+            show:false,
+            range:[]
             //calendarArr:[]
         }
     },
     watch:{
         currentDate(value){
             this.time = tool.getNewDate(value)
+        },
+        dateRange(value){
+            let range = value.map((item,i)=>{
+                return moment(item).format('YYYY-MM-DD')
+            })
+            this.range = range
         }
     },
     computed:{
@@ -57,19 +64,37 @@ export default {
                 year: year,
                 month: newMonth,
                 day: new Date(startTime + i * 24 * 60 * 60 * 1000).getDate(),
-                clickDay: false,
+                dateStr:moment(new Date(startTime + i * 24 * 60 * 60 * 1000)).format('YYYY-MM-DD'),
+                timestamp:Date.parse(moment(new Date(startTime + i * 24 * 60 * 60 * 1000)).format('YYYY-MM-DD'))
             })
             };
             let groupCalendar = []
             for(var i=0;i<calendarArr.length;i+=7){
                 groupCalendar.push(calendarArr.slice(i,i+7));
             }
+            console.log(groupCalendar)
             return groupCalendar
         }
     },
     created(){
+        
     },
     methods:{
+        isInRange(obj){
+            if(this.range.length == 2){
+                let start = Date.parse(this.range[0])
+                let end = Date.parse(this.range[1])
+                if(obj.timestamp>=start && obj.timestamp<=end){
+                    return true
+                }
+            }else{
+                return false
+            }
+        },
+        onCalendarChange(obj){
+            this.$emit('onCalendarChange',obj.date)
+            
+        },
         onPrevMonthChange(){
             let prevMonth = tool.getDate(this.time.year,this.time.month-1,1)
             let nextMonth = tool.getDate(this.time.year,this.time.month,1)
@@ -103,6 +128,12 @@ export default {
         className:'',
         currentDate:{
             type:Date
+        },
+        dateRange:{
+            type:Array
+        },
+        visible:{
+            type:Boolean
         }
     }
 }
@@ -180,6 +211,16 @@ export default {
             .next-month, .prev-month{
                 color: #c0c4cc;
             }
+            td.current-date{
+                div{
+                    margin-left: 5px;
+                    border-top-left-radius: 15px;
+                    border-bottom-left-radius: 15px;
+                    span{
+                        color:#409eff;
+                    }
+                }
+            }
             td.start-date{
                 div{
                     margin-left: 5px;
@@ -191,7 +232,7 @@ export default {
                     }
                 }
             }
-            td.current-date{
+            td.end-date{
                 div{
                     margin-left: 5px;
                     border-top-left-radius: 15px;
@@ -202,6 +243,14 @@ export default {
                     }
                 }
             }
+            td.in-range{
+                div{
+                    background-color: #f2f6fc;
+                    border-radius: 0px;
+                    margin-left: 0px;
+                }
+            }
+            
         }
     }
     .range-picker-content.is-left{
