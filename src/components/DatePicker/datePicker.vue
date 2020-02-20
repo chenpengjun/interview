@@ -72,7 +72,6 @@ export default {
             for(var i=0;i<calendarArr.length;i+=7){
                 groupCalendar.push(calendarArr.slice(i,i+7));
             }
-            console.log(groupCalendar)
             return groupCalendar
         }
     },

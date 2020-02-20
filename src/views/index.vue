@@ -35,8 +35,7 @@
     
     <el-button type="primary" @click="onOpenDialog">打开弹窗</el-button>
     <div style="margin-top:20px">
-      <CDatePicker
-        :diabledToday='true'
+      <CDatePicker :diabledToday="true" @change="onDateChange" 
       />
     </div>
     
@@ -84,6 +83,9 @@
         },
         onOk(){
           this.dialogVisible = false
+        },
+        onDateChange(value){
+          console.log(value)
         }
       }
     }

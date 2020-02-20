@@ -72,10 +72,14 @@ export default {
         }
     },
     props:{
+        change:{
+            //type:Function
+        },
         diabledToday:{
             type:Boolean,
             default:false
-        }
+        },
+        
     },
     watch:{
         visible(value){
@@ -99,9 +103,7 @@ export default {
     },
     
     created(){
-        // if(!this.diabledToday && this.dateValue==''){
-        //     this.startDate = moment().format('YYYY-MM-DD')
-        // }
+        
     },
     destroyed(){
         
@@ -117,14 +119,17 @@ export default {
             this.visible = true
         },
         onConfirmDate(){
+            console.log(this)
             if(this.quickyFilterValue.label){
                 this.dateValue = this.quickyFilterValue.label
+                this.$emit('change',[new Date(this.startDate),new Date(this.endDate)])
             }else{
                 let transfer_dateRange = []
                 this.dateRange.map((item,i)=>{
                     transfer_dateRange.push(moment(item).format('YYYY-MM-DD'))
                 })
                 this.dateValue = transfer_dateRange.join('至')
+                this.$emit('change',this.dateRange)
             }
             
             this.visible = false
